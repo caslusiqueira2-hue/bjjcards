@@ -154,8 +154,8 @@ export const CardComponent: React.FC<CardComponentProps> = ({
       }}
       className={`group relative flex flex-col justify-between rounded-xl border bg-gradient-to-b ${
         theme.gradientBg
-      } ${theme.border} p-3 transition-all duration-200 select-none cursor-pointer ${
-        compact ? 'w-40 h-56' : 'w-48 h-68 md:w-52 md:h-72'
+      } ${theme.border} p-2 sm:p-3 transition-all duration-200 select-none cursor-pointer ${
+        compact ? 'w-40 h-56' : 'w-32 h-48 sm:w-48 sm:h-68 md:w-52 md:h-72'
       } ${
         isSelected
           ? 'scale-105 ring-2 ring-amber-400 shadow-[0_0_25px_rgba(251,191,36,0.5)] z-20 -translate-y-2'
@@ -190,7 +190,7 @@ export const CardComponent: React.FC<CardComponentProps> = ({
       </div>
 
       {/* Central Illustration Area */}
-      <div className="relative my-2 h-20 md:h-24 rounded-lg bg-black/60 border border-white/10 flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative my-1 sm:my-2 h-14 sm:h-20 md:h-24 rounded-lg bg-black/60 border border-white/10 flex flex-col items-center justify-center overflow-hidden">
         {/* Subtle grid pattern background */}
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff15_1px,transparent_1px)] [background-size:8px_8px] opacity-20 pointer-events-none" />
 
@@ -212,18 +212,18 @@ export const CardComponent: React.FC<CardComponentProps> = ({
         )}
 
         {/* Martial Art Floating Emblem Icon in Corner */}
-        <div className="absolute top-1 left-1.5 p-1 rounded-md bg-black/70 backdrop-blur-sm border border-white/10 z-10">
-          <Icon className="w-3.5 h-3.5 text-slate-200" />
+        <div className="absolute top-1 left-1.5 p-0.5 sm:p-1 rounded-md bg-black/70 backdrop-blur-sm border border-white/10 z-10">
+          <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-200" />
         </div>
 
         {/* Points or Finalização Badge */}
         {card.pointsOnSuccess && (
-          <div className="absolute bottom-1 right-1 bg-amber-500/90 text-black text-[10px] font-mono font-black px-1.5 py-0.5 rounded shadow z-10">
+          <div className="absolute bottom-1 right-1 bg-amber-500/90 text-black text-[9px] sm:text-[10px] font-mono font-black px-1 sm:px-1.5 py-0.5 rounded shadow z-10">
             +{card.pointsOnSuccess} PTS
           </div>
         )}
         {card.isSubmission && (
-          <div className="absolute bottom-1 right-1 bg-purple-600 text-white text-[9px] font-mono font-black px-1.5 py-0.5 rounded shadow animate-pulse z-10">
+          <div className="absolute bottom-1 right-1 bg-purple-600 text-white text-[8px] sm:text-[9px] font-mono font-black px-1 sm:px-1.5 py-0.5 rounded shadow animate-pulse z-10">
             FINALIZAR
           </div>
         )}
@@ -232,36 +232,36 @@ export const CardComponent: React.FC<CardComponentProps> = ({
       {/* Technique Title & Description */}
       <div className="z-10 flex-1 flex flex-col justify-between">
         <div>
-          <h4 className="font-title text-sm md:text-base font-bold text-slate-100 tracking-wide leading-tight line-clamp-1">
+          <h4 className="font-title text-xs sm:text-sm md:text-base font-bold text-slate-100 tracking-wide leading-tight line-clamp-1">
             {card.name}
           </h4>
-          <p className="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+          <p className="text-[9px] sm:text-[10px] text-slate-400 mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-2 leading-tight sm:leading-relaxed">
             {card.description}
           </p>
         </div>
 
         {/* Tactical Requirements & Success Pill */}
-        <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px]">
+        <div className="mt-1 sm:mt-2 pt-1 sm:pt-2 border-t border-white/10 flex items-center justify-between text-[9px] sm:text-[10px]">
           <div className="flex items-center gap-1">
             {card.requiredRole === 'top' && (
-              <span className="px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-600/50 font-mono font-bold text-[9px]">
+              <span className="px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-600/50 font-mono font-bold text-[8px] sm:text-[9px]">
                 POR CIMA
               </span>
             )}
             {card.requiredRole === 'bottom' && (
-              <span className="px-1.5 py-0.2 rounded bg-blue-950/80 text-blue-300 border border-blue-600/50 font-mono font-bold text-[9px]">
+              <span className="px-1.5 py-0.2 rounded bg-blue-950/80 text-blue-300 border border-blue-600/50 font-mono font-bold text-[8px] sm:text-[9px]">
                 POR BAIXO
               </span>
             )}
             {card.requiredRole === 'any' && (
-              <span className="px-1.5 py-0.2 rounded bg-zinc-800 text-slate-300 border border-slate-600 font-mono text-[9px]">
+              <span className="px-1.5 py-0.2 rounded bg-zinc-800 text-slate-300 border border-slate-600 font-mono text-[8px] sm:text-[9px]">
                 LIVRE
               </span>
             )}
           </div>
 
           {estimatedSuccessRate !== undefined && isValid && (
-            <span className="text-emerald-400 font-mono font-bold text-[10px]">
+            <span className="text-emerald-400 font-mono font-bold text-[9px] sm:text-[10px]">
               {estimatedSuccessRate}%
             </span>
           )}
@@ -275,7 +275,7 @@ export const CardComponent: React.FC<CardComponentProps> = ({
             e.stopPropagation();
             if (onPlay) onPlay();
           }}
-          className="mt-2 w-full py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-title font-black text-xs uppercase tracking-wider rounded-md shadow-lg transition-all animate-pulse"
+          className="mt-1 sm:mt-2 w-full py-1 sm:py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-title font-black text-[10px] sm:text-xs uppercase tracking-wider rounded-md shadow-lg transition-all animate-pulse"
         >
           Executar Técnica
         </button>

@@ -354,14 +354,16 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           isAiThinking={isClashing}
         />
 
-        <TechnicalStateHUD
-          position={combatState.technical.position}
-          player={player}
-          opponent={opponent}
-          topAthleteId={combatState.technical.topAthleteId}
-          bottomAthleteId={combatState.technical.bottomAthleteId}
-          activeSubmission={combatState.technical.activeSubmission}
-        />
+        <div className="hidden md:block">
+          <TechnicalStateHUD
+            position={combatState.technical.position}
+            player={player}
+            opponent={opponent}
+            topAthleteId={combatState.technical.topAthleteId}
+            bottomAthleteId={combatState.technical.bottomAthleteId}
+            activeSubmission={combatState.technical.activeSubmission}
+          />
+        </div>
       </div>
 
       {/* Center: Dynamic BJJ Card Duel Arena */}
@@ -380,8 +382,10 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       </div>
 
       {/* Bottom Area: Action commentary and Hand of Cards */}
-      <div className="w-full">
-        <CombatLog logs={combatState.actionLogs} />
+      <div className="w-full pb-14 sm:pb-0">
+        <div className="hidden md:block">
+          <CombatLog logs={combatState.actionLogs} />
+        </div>
 
         <CardHand
           cards={INITIAL_CARDS}

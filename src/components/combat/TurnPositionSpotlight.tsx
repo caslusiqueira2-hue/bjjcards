@@ -26,7 +26,7 @@ export const TurnPositionSpotlight: React.FC<TurnPositionSpotlightProps> = ({
   turnNumber,
   onContinue
 }) => {
-  const [countdown, setCountdown] = useState<number>(3);
+  const [countdown, setCountdown] = useState<number>(2);
 
   const position = clash.newPosition || combatState.technical.position;
   const positionName = clash.newPositionName || getPositionNamePt(position);
@@ -77,7 +77,7 @@ export const TurnPositionSpotlight: React.FC<TurnPositionSpotlightProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-2xl bg-gradient-to-b from-zinc-950 via-[#0a0d14] to-zinc-950 border-2 border-amber-500/80 rounded-3xl p-5 md:p-7 shadow-[0_0_50px_rgba(245,158,11,0.4)] flex flex-col items-center text-center space-y-4 max-h-[92vh] overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-gradient-to-b from-zinc-950 via-[#0a0d14] to-zinc-950 border-2 border-amber-500/80 rounded-3xl p-3 md:p-7 shadow-[0_0_50px_rgba(245,158,11,0.4)] flex flex-col items-center text-center space-y-4 max-h-[92vh] overflow-y-auto">
         {/* Glow ambient background aura */}
         <div className="absolute -top-20 inset-x-0 h-40 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
@@ -127,7 +127,7 @@ export const TurnPositionSpotlight: React.FC<TurnPositionSpotlightProps> = ({
               <Flame className="w-4 h-4 text-amber-400 animate-pulse" />
               NOVA SITUAÇÃO NO TATAME
             </span>
-            <h2 className="font-title text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-300 uppercase tracking-wide mt-0.5">
+            <h2 className="font-title text-xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-300 uppercase tracking-wide mt-0.5">
               {positionName}
             </h2>
           </div>
@@ -141,13 +141,13 @@ export const TurnPositionSpotlight: React.FC<TurnPositionSpotlightProps> = ({
               opponentBelt={opponent.belt}
               playerGiColor={player.visual?.giColor === 'royal-blue' ? '#2563eb' : player.visual?.giColor === 'black' ? '#18181b' : '#f8fafc'}
               opponentGiColor={opponent.visual?.giColor === 'royal-blue' ? '#2563eb' : opponent.visual?.giColor === 'black' ? '#18181b' : '#3b82f6'}
-              size="lg"
+              size="md"
               className="border-2 border-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.25)]"
             />
           </div>
 
           {/* Spatial Breakdown: Quem está por Cima vs Quem está por Baixo */}
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div className="w-full hidden sm:grid sm:grid-cols-2 gap-3 pt-1">
             {isStanding ? (
               <div className="col-span-full p-3 rounded-2xl bg-zinc-900/80 border border-slate-700 flex items-center justify-center gap-3">
                 <span className="font-title text-sm font-black text-slate-200 uppercase">

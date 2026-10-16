@@ -145,9 +145,9 @@ export const CardHand: React.FC<CardHandProps> = ({
   const recoveryCard = cards.find((c) => c.id === 'rec_respiracao_base');
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-2 bg-gradient-to-t from-black via-zinc-950/95 to-zinc-900/90 border-t-2 border-amber-500/50 rounded-t-3xl p-3 md:p-4 shadow-2xl backdrop-blur-md">
+    <div className="w-full max-w-4xl mx-auto mt-2 bg-gradient-to-t from-black via-zinc-950/95 to-zinc-900/90 border-t-2 border-amber-500/50 rounded-t-3xl p-2 sm:p-3 md:p-4 shadow-2xl backdrop-blur-md">
       {/* 1. Tactical Role & Position Clarity Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-zinc-900/80 border border-white/10 rounded-2xl p-2 px-3 mb-2.5">
+      <div className="hidden sm:flex sm:flex-col sm:flex-row sm:items-center justify-between gap-2 bg-zinc-900/80 border border-white/10 rounded-2xl p-2 px-3 mb-2.5">
         <div className="flex items-center gap-2">
           <span className={`px-2.5 py-0.5 rounded-full font-title text-[11px] md:text-xs font-black uppercase tracking-wider border ${roleInfo.badgeClass}`}>
             {roleInfo.badge}
@@ -168,7 +168,7 @@ export const CardHand: React.FC<CardHandProps> = ({
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-amber-400 font-title font-bold text-xs">
             <Zap className="w-4 h-4 fill-amber-400 text-amber-400 animate-pulse" />
-            <span>ENERGIA:</span>
+            <span className="hidden sm:inline">ENERGIA:</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ export const CardHand: React.FC<CardHandProps> = ({
             <button
               key={tab.value}
               onClick={() => setActiveFilter(tab.value)}
-              className={`px-2.5 py-1 rounded-full text-[10px] md:text-[11px] font-title font-bold whitespace-nowrap transition-all ${
+              className={`px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] md:text-[11px] font-title font-bold whitespace-nowrap transition-all ${
                 activeFilter === tab.value
                   ? 'bg-amber-500 text-black shadow-md font-black'
                   : 'bg-zinc-800 text-slate-400 hover:text-slate-200'

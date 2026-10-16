@@ -2,7 +2,7 @@ import React from 'react';
 import { IBJJFScore } from '../../types/combat';
 import { Athlete } from '../../types/athlete';
 import { BeltBadge } from '../ui/BeltBadge';
-import { Timer, Trophy, Shield, Volume2, VolumeX, Zap } from 'lucide-react';
+import { Timer, Trophy, Volume2, VolumeX, Zap } from 'lucide-react';
 import { sound } from '../../audio/soundEffects';
 
 interface ScoreboardProps {
@@ -43,10 +43,19 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
   const isLowTime = roundTimeSeconds <= 30 && roundTimeSeconds > 0;
 
+  const initiativePercent =
+    turnInitiativeSeconds !== undefined && maxTurnInitiativeSeconds !== undefined
+      ? Math.max(0, Math.min(100, (turnInitiativeSeconds / maxTurnInitiativeSeconds) * 100))
+      : null;
+
+  const initiativeDanger = turnInitiativeSeconds !== undefined && turnInitiativeSeconds <= 3;
+  const initiativeWarn = turnInitiativeSeconds !== undefined && turnInitiativeSeconds <= 6;
+
   return (
-    <div className="w-full max-w-4xl mx-auto mb-3 bg-[#0d0f17] border border-amber-600/30 rounded-2xl p-2.5 md:p-3.5 shadow-2xl backdrop-blur-md">
-      {/* Top Bar: Tournament header, Round and Sound control */}
-      <div className="flex items-center justify-between text-xs border-b border-white/10 pb-2 mb-2.5 px-2">
+    <div className="w-full max-w-4xl mx-auto mb-2 sm:mb-3 bg-[#0d0f17] border border-amber-600/30 rounded-xl sm:rounded-2xl p-1.5 sm:p-2.5 md:p-3.5 shadow-2xl backdrop-blur-md">
+
+      {/* ── SM+ HEADER: Tournament header, Round and Sound ──────────── */}
+      <div className="hidden sm:flex items-center justify-between text-xs border-b border-white/10 pb-2 mb-2.5 px-2">
         <div className="flex items-center gap-2 text-slate-400">
           <Trophy className="w-4 h-4 text-amber-400" />
           <span className="font-title font-bold uppercase tracking-widest text-slate-200">
@@ -92,21 +101,21 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         </div>
       </div>
 
-      {/* Turn Action & Opponent Autonomous Initiative Countdown Bar */}
+      {/* ── SM+ INITIATIVE COUNTDOWN BAR (full version) ─────────── */}
       {turnInitiativeSeconds !== undefined && maxTurnInitiativeSeconds !== undefined && (
-        <div className="mb-3 px-2 py-1.5 rounded-xl bg-black/60 border border-white/10 shadow-inner">
+        <div className="hidden sm:block mb-3 px-2 py-1.5 rounded-xl bg-black/60 border border-white/10 shadow-inner">
           <div className="flex items-center justify-between text-[11px] font-mono mb-1 px-1">
             <span
               className={`flex items-center gap-1.5 font-bold ${
-                turnInitiativeSeconds <= 3
+                initiativeDanger
                   ? 'text-red-400 animate-pulse font-black'
-                  : turnInitiativeSeconds <= 6
+                  : initiativeWarn
                   ? 'text-amber-400'
                   : 'text-slate-300'
               }`}
             >
-              <Zap className={`w-3.5 h-3.5 ${turnInitiativeSeconds <= 3 ? 'text-red-500 fill-red-500' : 'text-amber-400'}`} />
-              {turnInitiativeSeconds <= 3
+              <Zap className={`w-3.5 h-3.5 ${initiativeDanger ? 'text-red-500 fill-red-500' : 'text-amber-400'}`} />
+              {initiativeDanger
                 ? `PERIGO! ${opponent.name.split(' ')[0]} VAI ATACAR EM ${turnInitiativeSeconds}s!`
                 : `TEMPO DE AÇÃO: ${turnInitiativeSeconds}s para jogar`}
             </span>
@@ -121,29 +130,138 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
           <div className="relative w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden border border-slate-800">
             <div
               className={`h-full transition-all duration-500 rounded-full ${
-                turnInitiativeSeconds <= 3
+                initiativeDanger
                   ? 'bg-gradient-to-r from-red-600 to-rose-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.8)]'
-                  : turnInitiativeSeconds <= 6
+                  : initiativeWarn
                   ? 'bg-gradient-to-r from-amber-500 to-yellow-400'
                   : 'bg-gradient-to-r from-blue-500 via-indigo-400 to-emerald-400'
               }`}
-              style={{
-                width: `${Math.max(0, Math.min(100, (turnInitiativeSeconds / maxTurnInitiativeSeconds) * 100))}%`
-              }}
+              style={{ width: `${initiativePercent}%` }}
             />
           </div>
         </div>
       )}
 
-      {/* Main Scoreboard Content: Player - Timer - Opponent */}
-      <div className="grid grid-cols-12 items-center gap-2 md:gap-4">
+      {/* ═══════════════════════════════════════════════════════════
+          MOBILE-ONLY COMPACT SCOREBOARD  (< sm)
+          Single row: [Name PTS | Timer | PTS Name]  ~80px total
+         ═══════════════════════════════════════════════════════════ */}
+      <div className="sm:hidden">
+        {/* Top micro-bar: turn indicator + round + sound */}
+        <div className="flex items-center justify-between px-1 mb-1">
+          <div className="flex items-center gap-1">
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                currentTurn === 'player' ? 'bg-blue-400 animate-pulse' : 'bg-red-400 animate-pulse'
+              }`}
+            />
+            <span className="text-[9px] font-mono text-slate-400 uppercase">
+              {currentTurn === 'player'
+                ? 'SUA VEZ'
+                : isAiThinking
+                ? 'IA...'
+                : 'RIVAL'}
+            </span>
+            <span className="text-[9px] font-mono text-slate-500">T{turnNumber}</span>
+          </div>
+
+          {/* Initiative countdown text (compact) */}
+          {turnInitiativeSeconds !== undefined && (
+            <span
+              className={`text-[9px] font-mono font-bold ${
+                initiativeDanger ? 'text-red-400 animate-pulse' : 'text-slate-400'
+              }`}
+            >
+              <Zap className="w-2.5 h-2.5 inline -mt-px mr-0.5" />
+              {turnInitiativeSeconds}s
+            </span>
+          )}
+
+          {onToggleSound && (
+            <button
+              onClick={onToggleSound}
+              className="p-0.5 rounded text-slate-500 active:text-amber-400 transition-colors"
+              title={isMuted ? 'Ativar Som' : 'Mutar'}
+            >
+              {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+            </button>
+          )}
+        </div>
+
+        {/* Main row: Player PTS | TIMER | PTS Opponent */}
+        <div className="flex items-center justify-between gap-1 px-0.5">
+          {/* Player side */}
+          <div className="flex items-center gap-1.5 min-w-0 flex-1">
+            <div className="flex flex-col min-w-0">
+              <span className="text-[10px] font-title font-black text-blue-200 truncate max-w-[64px] leading-tight">
+                {player.name.split(' ')[0]}
+              </span>
+              <BeltBadge belt={player.belt} stripes={player.stripes} size="sm" showText={false} />
+            </div>
+            <span className="w-8 h-8 rounded-md bg-emerald-950/80 border-2 border-emerald-500 text-emerald-300 font-mono font-black text-lg flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.25)]">
+              {playerScore.points}
+            </span>
+          </div>
+
+          {/* Center timer */}
+          <div className="flex flex-col items-center shrink-0 px-1">
+            <div
+              className={`px-2 py-0.5 rounded-lg border bg-black flex items-center justify-center ${
+                isLowTime
+                  ? 'border-red-500 text-red-500 shadow-[0_0_12px_rgba(239,68,68,0.4)] animate-pulse'
+                  : 'border-white/10 text-amber-400'
+              }`}
+            >
+              <span className="font-mono text-sm font-black tracking-wider">
+                {formattedTime}
+              </span>
+            </div>
+          </div>
+
+          {/* Opponent side */}
+          <div className="flex items-center gap-1.5 min-w-0 flex-1 justify-end">
+            <span className="w-8 h-8 rounded-md bg-emerald-950/80 border-2 border-emerald-500 text-emerald-300 font-mono font-black text-lg flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.25)]">
+              {opponentScore.points}
+            </span>
+            <div className="flex flex-col items-end min-w-0">
+              <span className="text-[10px] font-title font-black text-red-200 truncate max-w-[64px] leading-tight text-right">
+                {opponent.name.split(' ')[0]}
+              </span>
+              <BeltBadge belt={opponent.belt} stripes={opponent.stripes} size="sm" showText={false} />
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile thin initiative progress bar */}
+        {initiativePercent !== null && (
+          <div className="mt-1 mx-0.5">
+            <div className="relative w-full h-[2px] bg-zinc-900 rounded-full overflow-hidden">
+              <div
+                className={`h-full transition-all duration-500 rounded-full ${
+                  initiativeDanger
+                    ? 'bg-red-500 animate-pulse'
+                    : initiativeWarn
+                    ? 'bg-amber-400'
+                    : 'bg-blue-400'
+                }`}
+                style={{ width: `${initiativePercent}%` }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SM+ FULL SCOREBOARD LAYOUT
+         ═══════════════════════════════════════════════════════════ */}
+      <div className="hidden sm:grid grid-cols-12 items-center gap-2 md:gap-4">
         {/* PLAYER SIDE (Columns 1-5) */}
         <div className="col-span-5 flex items-center justify-between bg-blue-950/20 border border-blue-500/20 rounded-xl p-2 md:p-3">
           <div className="flex flex-col min-w-0">
-            <span className="font-title text-xs sm:text-sm md:text-base font-black text-blue-200 tracking-wide truncate max-w-[80px] sm:max-w-[140px] md:max-w-none">
+            <span className="font-title text-sm md:text-base font-black text-blue-200 tracking-wide truncate max-w-[140px] md:max-w-none">
               {player.name}
             </span>
-            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono truncate max-w-[80px] sm:max-w-[140px] md:max-w-none">
+            <span className="text-[10px] text-slate-400 font-mono truncate max-w-[140px] md:max-w-none">
               {player.academy}
             </span>
             <div className="mt-1">
@@ -188,7 +306,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
                 : 'border-white/10 text-amber-400'
             }`}
           >
-            <Timer className="w-3.5 h-3.5 mr-1 text-slate-400 hidden sm:inline" />
+            <Timer className="w-3.5 h-3.5 mr-1 text-slate-400" />
             <span className="font-mono text-base md:text-xl font-black tracking-widest">
               {formattedTime}
             </span>
@@ -228,30 +346,16 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
           </div>
 
           <div className="flex flex-col items-end min-w-0">
-            <span className="font-title text-xs sm:text-sm md:text-base font-black text-red-200 tracking-wide truncate max-w-[80px] sm:max-w-[140px] md:max-w-none text-right">
+            <span className="font-title text-sm md:text-base font-black text-red-200 tracking-wide truncate max-w-[140px] md:max-w-none text-right">
               {opponent.name}
             </span>
-            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono truncate max-w-[80px] sm:max-w-[140px] md:max-w-none text-right">
+            <span className="text-[10px] text-slate-400 font-mono truncate max-w-[140px] md:max-w-none text-right">
               {opponent.academy}
             </span>
             <div className="mt-1">
               <BeltBadge belt={opponent.belt} stripes={opponent.stripes} size="sm" showText={false} />
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Official IBJJF Points Reference Quick Legend */}
-      <div className="mt-2 pt-2 border-t border-white/5 flex flex-wrap items-center justify-between text-[10px] font-mono text-slate-400 px-2 gap-1">
-        <span className="text-amber-400 font-bold uppercase tracking-wider">
-          TABELA OFICIAL IBJJF:
-        </span>
-        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-          <span className="text-slate-300">Queda: <strong className="text-emerald-400">+2</strong></span>
-          <span className="text-slate-300">Raspagem / Upa: <strong className="text-emerald-400">+2</strong></span>
-          <span className="text-slate-300">Joelho na Barriga: <strong className="text-emerald-400">+2</strong></span>
-          <span className="text-slate-300">Passagem: <strong className="text-emerald-400">+3</strong></span>
-          <span className="text-slate-300">Montada / Costas: <strong className="text-emerald-400">+4</strong></span>
         </div>
       </div>
     </div>

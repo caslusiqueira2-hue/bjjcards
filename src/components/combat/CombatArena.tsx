@@ -43,7 +43,7 @@ export const CombatArena: React.FC<CombatArenaProps> = ({
   return (
     <div className="relative w-full max-w-4xl mx-auto flex flex-col items-center">
       {/* 1. Momentum Bar (Cabo de Guerra Tático) */}
-      <div className="w-full mb-2 bg-zinc-950/90 border border-white/10 rounded-2xl p-2.5 shadow-xl backdrop-blur-md">
+      <div className="hidden sm:block w-full mb-2 bg-zinc-950/90 border border-white/10 rounded-2xl p-2.5 shadow-xl backdrop-blur-md">
         <div className="flex items-center justify-between text-[11px] font-mono font-bold mb-1.5 px-1">
           <span className="text-blue-400 flex items-center gap-1">
             <Zap className="w-3.5 h-3.5 fill-blue-400" />
@@ -89,7 +89,7 @@ export const CombatArena: React.FC<CombatArenaProps> = ({
       </div>
 
       {/* 2. Main Championship Tatame Arena */}
-      <div className="relative w-full aspect-[16/9] min-h-[360px] max-h-[440px] rounded-3xl bg-black border-2 border-amber-500/40 shadow-tatame overflow-hidden flex flex-col justify-between p-3 md:p-5">
+      <div className="relative w-full aspect-[16/8] sm:aspect-[16/9] min-h-[200px] sm:min-h-[360px] max-h-[260px] sm:max-h-[440px] rounded-3xl bg-black border-2 border-amber-500/40 shadow-tatame overflow-hidden flex flex-col justify-between p-3 md:p-5">
         {/* Championship Arena Photo Background */}
         <div
           className="absolute inset-0 bg-cover bg-center pointer-events-none filter brightness-[0.70] contrast-125 transition-transform duration-700"
@@ -132,7 +132,7 @@ export const CombatArena: React.FC<CombatArenaProps> = ({
         {/* Center: Face-off Athletes and Card Clash Zone */}
         <div className="relative my-auto flex items-center justify-around w-full z-10 px-2 md:px-4">
           {/* Player Fighter Visual */}
-          <div className={`flex flex-col items-center transition-all duration-300 ${isClashing ? 'scale-105' : ''}`}>
+          <div className={`hidden sm:flex flex-col items-center transition-all duration-300 ${isClashing ? 'scale-105' : ''}`}>
             <AthleteToken
               athlete={player}
               isPlayer={true}
@@ -261,16 +261,31 @@ export const CombatArena: React.FC<CombatArenaProps> = ({
                     <span>POSIÇÃO: {positionLabel}</span>
                   </div>
 
-                  <PositionIllustration
-                    position={technical.position}
-                    playerRole={isStanding ? 'standing' : isPlayerTop ? 'top' : 'bottom'}
-                    playerBelt={player.belt}
-                    opponentBelt={opponent.belt}
-                    playerGiColor={player.visual?.giColor === 'royal-blue' ? '#2563eb' : player.visual?.giColor === 'black' ? '#18181b' : '#f8fafc'}
-                    opponentGiColor={opponent.visual?.giColor === 'royal-blue' ? '#2563eb' : opponent.visual?.giColor === 'black' ? '#18181b' : '#3b82f6'}
-                    size="md"
-                    className="shadow-lg border border-amber-500/30"
-                  />
+                  {/* Responsive size: sm on mobile, md on sm+ */}
+                  <div className="block sm:hidden">
+                    <PositionIllustration
+                      position={technical.position}
+                      playerRole={isStanding ? 'standing' : isPlayerTop ? 'top' : 'bottom'}
+                      playerBelt={player.belt}
+                      opponentBelt={opponent.belt}
+                      playerGiColor={player.visual?.giColor === 'royal-blue' ? '#2563eb' : player.visual?.giColor === 'black' ? '#18181b' : '#f8fafc'}
+                      opponentGiColor={opponent.visual?.giColor === 'royal-blue' ? '#2563eb' : opponent.visual?.giColor === 'black' ? '#18181b' : '#3b82f6'}
+                      size="sm"
+                      className="shadow-lg border border-amber-500/30"
+                    />
+                  </div>
+                  <div className="hidden sm:block">
+                    <PositionIllustration
+                      position={technical.position}
+                      playerRole={isStanding ? 'standing' : isPlayerTop ? 'top' : 'bottom'}
+                      playerBelt={player.belt}
+                      opponentBelt={opponent.belt}
+                      playerGiColor={player.visual?.giColor === 'royal-blue' ? '#2563eb' : player.visual?.giColor === 'black' ? '#18181b' : '#f8fafc'}
+                      opponentGiColor={opponent.visual?.giColor === 'royal-blue' ? '#2563eb' : opponent.visual?.giColor === 'black' ? '#18181b' : '#3b82f6'}
+                      size="md"
+                      className="shadow-lg border border-amber-500/30"
+                    />
+                  </div>
                 </div>
 
                 <div className="mt-1.5 text-[10px] font-mono text-slate-300">
@@ -285,7 +300,7 @@ export const CombatArena: React.FC<CombatArenaProps> = ({
           </div>
 
           {/* Opponent Fighter Visual */}
-          <div className={`flex flex-col items-center transition-all duration-300 ${isClashing ? 'scale-105' : ''}`}>
+          <div className={`hidden sm:flex flex-col items-center transition-all duration-300 ${isClashing ? 'scale-105' : ''}`}>
             <AthleteToken
               athlete={opponent}
               isPlayer={false}
