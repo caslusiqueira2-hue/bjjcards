@@ -8,6 +8,7 @@ interface MainMenuProps {
   onQuickFight: () => void;
   onCreateAthlete: () => void;
   onOpenRules: () => void;
+  onDailyChampionship: () => void;
   isMuted: boolean;
   onToggleSound: () => void;
 }
@@ -17,6 +18,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   onQuickFight,
   onCreateAthlete,
   onOpenRules,
+  onDailyChampionship,
   isMuted,
   onToggleSound
 }) => {
@@ -72,16 +74,44 @@ export const MainMenu: React.FC<MainMenuProps> = ({
         </p>
 
         {/* Main Action Buttons */}
-        <div className="mt-10 w-full max-w-md flex flex-col gap-3.5">
+        <div className="mt-8 w-full max-w-md flex flex-col gap-3.5">
+          {/* NEW PROTOTYPE BUTTON: MODO CAMPEONATO DIÁRIO (7A0) */}
+          <div className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 rounded-3xl blur opacity-75 group-hover:opacity-100 transition duration-500 group-hover:duration-200 animate-pulse" />
+            <button
+              onClick={() => {
+                sound.playWhistle();
+                onDailyChampionship();
+              }}
+              className="relative w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-title font-black text-base sm:text-lg uppercase tracking-wider shadow-[0_0_35px_rgba(245,158,11,0.6)] transition-all transform hover:scale-[1.02] flex items-center justify-between border-2 border-white/60"
+            >
+              <div className="flex items-center gap-3">
+                <Trophy className="w-6 h-6 text-black flex-shrink-0" />
+                <div className="text-left">
+                  <div className="flex items-center gap-2">
+                    <span className="leading-tight">Campeonato Diário</span>
+                    <span className="px-2 py-0.5 rounded-full bg-black text-amber-300 text-[10px] font-mono font-black uppercase tracking-normal">
+                      NOVO PROTÓTIPO
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-amber-950 block">
+                    Treino Diário • Deck Posicional • Chave 7a0
+                  </span>
+                </div>
+              </div>
+              <Sparkles className="w-5 h-5 text-black flex-shrink-0" />
+            </button>
+          </div>
+
           <button
             onClick={() => {
               sound.playWhistle();
               onStartCareer();
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-black font-title font-black text-lg uppercase tracking-wider shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all transform hover:scale-[1.03] flex items-center justify-center gap-3"
+            className="w-full py-3.5 px-6 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 border border-slate-700 hover:border-amber-500/60 text-slate-100 font-title font-bold text-base uppercase tracking-wider shadow-lg transition-all transform hover:scale-[1.01] flex items-center justify-center gap-3"
           >
-            <Trophy className="w-6 h-6 text-black" />
-            <span>Iniciar Modo Carreira</span>
+            <Trophy className="w-5 h-5 text-amber-400" />
+            <span>Modo Carreira Clássico</span>
           </button>
 
           <button

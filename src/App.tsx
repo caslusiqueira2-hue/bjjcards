@@ -9,11 +9,12 @@ import { MainMenu } from './components/screens/MainMenu';
 import { CharacterCreation } from './components/screens/CharacterCreation';
 import { CareerDashboard } from './components/screens/CareerDashboard';
 import { CombatScreen } from './components/screens/CombatScreen';
+import { DailyChampionshipScreen } from './components/screens/DailyChampionshipScreen';
 import { RulesGuideModal } from './components/ui/RulesGuideModal';
 import { sound } from './audio/soundEffects';
 import { getDeterministicAvatar } from './components/career/AthletePortrait';
 
-type Screen = 'MAIN_MENU' | 'CHARACTER_CREATION' | 'CAREER_DASHBOARD' | 'COMBAT';
+type Screen = 'MAIN_MENU' | 'CHARACTER_CREATION' | 'CAREER_DASHBOARD' | 'COMBAT' | 'DAILY_CHAMPIONSHIP';
 
 const DEFAULT_PLAYER: Athlete = {
   id: 'player_main',
@@ -255,8 +256,16 @@ export default function App() {
           onQuickFight={handleQuickFight}
           onCreateAthlete={() => setScreen('CHARACTER_CREATION')}
           onOpenRules={() => setIsRulesOpen(true)}
+          onDailyChampionship={() => setScreen('DAILY_CHAMPIONSHIP')}
           isMuted={isMuted}
           onToggleSound={handleToggleSound}
+        />
+      )}
+
+      {screen === 'DAILY_CHAMPIONSHIP' && (
+        <DailyChampionshipScreen
+          playerAthlete={player}
+          onBackToMainMenu={() => setScreen('MAIN_MENU')}
         />
       )}
 
