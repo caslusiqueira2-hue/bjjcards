@@ -2,6 +2,7 @@ import React from 'react';
 import { CombatPosition, SubmissionThreat } from '../../types/combat';
 import { Athlete } from '../../types/athlete';
 import { getPositionNamePt } from '../../engine/bjjRules';
+import { PositionIllustration } from './PositionIllustration';
 import { Shield, Skull, Zap, AlertCircle, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 
 interface TechnicalStateHUDProps {
@@ -67,15 +68,27 @@ export const TechnicalStateHUD: React.FC<TechnicalStateHUDProps> = ({
     <div className="w-full max-w-4xl mx-auto mb-2.5 flex flex-col md:flex-row gap-2">
       {/* Position Status Panel */}
       <div className="flex-1 bg-zinc-950/90 border border-slate-700/60 rounded-xl p-3 shadow-lg flex flex-col justify-between">
-        <div className="flex items-center justify-between border-b border-white/10 pb-1.5 mb-2">
-          <div className="flex items-center gap-1.5">
+        <div className="flex items-center justify-between border-b border-white/10 pb-1.5 mb-2 gap-2">
+          <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-widest">
-              SITUAÇÃO DO COMBATE
+              SITUAÇÃO DO COMBATE:
+            </span>
+            <span className="px-2.5 py-0.5 rounded-lg text-xs font-title font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase">
+              {getPositionNamePt(position)}
             </span>
           </div>
-          <span className="px-2.5 py-0.5 rounded-lg text-xs font-title font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase">
-            {getPositionNamePt(position)}
-          </span>
+
+          <div className="hidden sm:block">
+            <PositionIllustration
+              position={position}
+              playerRole={isStanding ? 'standing' : player.id === topAthleteId ? 'top' : 'bottom'}
+              playerBelt={player.belt}
+              opponentBelt={opponent.belt}
+              size="sm"
+              showPointsBadge={false}
+              className="border border-white/10 shadow-sm"
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">

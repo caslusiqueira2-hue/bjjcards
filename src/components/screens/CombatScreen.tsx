@@ -12,6 +12,7 @@ import { TechnicalStateHUD } from '../combat/TechnicalStateHUD';
 import { CardHand } from '../combat/CardHand';
 import { CombatLog } from '../combat/CombatLog';
 import { CombatResultModal } from '../ui/CombatResultModal';
+import { TurnPositionSpotlight } from '../combat/TurnPositionSpotlight';
 import { sound } from '../../audio/soundEffects';
 import { Zap } from 'lucide-react';
 
@@ -37,6 +38,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   const [selectedCard, setSelectedCard] = useState<CombatCard | null>(null);
   const [isClashing, setIsClashing] = useState<boolean>(false);
   const [activeClash, setActiveClash] = useState<ClashResolution | null>(null);
+  const [showTurnSpotlight, setShowTurnSpotlight] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(sound.getIsMuted());
 
   // Turn initiative timer calculation: Comfortable 18-24 seconds so the player can analyze the tatame and react comfortably!
@@ -83,8 +85,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       return;
     }
 
-    // Do not tick down during clash animations
-    if (isClashing) return;
+    // Do not tick down during clash animations or when position spotlight is showing
+    if (isClashing || showTurnSpotlight) return;
 
     const interval = setInterval(() => {
       // 1. Tick match clock down by 1 second
@@ -117,7 +119,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [combatState.status, combatState.roundTimeSeconds, isClashing, player, opponent, selectedCard, playerStallCount]);
+  }, [combatState.status, combatState.roundTimeSeconds, isClashing, showTurnSpotlight, player, opponent, selectedCard, playerStallCount]);
 
   // Opponent takes autonomous aggressive initiative when player hesitates or stalls
   const handleOpponentAutonomousInitiative = () => {
@@ -243,9 +245,16 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     setCombatState(nextState);
     setSelectedCard(null);
 
-    setTimeout(() => {
-      setIsClashing(false);
-    }, 1200);
+    // Show emphatic turn position spotlight if match is still in progress
+    if (nextState.status === 'IN_PROGRESS') {
+      setTimeout(() => {
+        setShowTurnSpotlight(true);
+      }, 500);
+    } else {
+      setTimeout(() => {
+        setIsClashing(false);
+      }, 1200);
+    }
   };
 
   // Handle simultaneous Card Clash Execution when player initiates
@@ -293,10 +302,16 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     setCombatState(nextState);
     setSelectedCard(null);
 
-    // Allow players to absorb the clash animation before next turn
-    setTimeout(() => {
-      setIsClashing(false);
-    }, 1200);
+    // Show emphatic turn position spotlight if match is still in progress
+    if (nextState.status === 'IN_PROGRESS') {
+      setTimeout(() => {
+        setShowTurnSpotlight(true);
+      }, 500);
+    } else {
+      setTimeout(() => {
+        setIsClashing(false);
+      }, 1200);
+    }
   };
 
   const handleToggleSound = () => {
@@ -311,6 +326,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     setSelectedCard(null);
     setActiveClash(null);
     setIsClashing(false);
+    setShowTurnSpotlight(false);
     setPlayerStallCount(0);
     const maxT = calculateTurnInitiativeMax(initialOpponent, CombatEngine.createMatch(initialPlayer, initialOpponent, 360));
     setMaxTurnInitiative(maxT);
@@ -394,6 +410,25 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             </span>
           </button>
         </div>
+      )}
+
+      {/* End-of-Turn Emphatic Position Spotlight Modal */}
+      {showTurnSpotlight && activeClash && combatState.status === 'IN_PROGRESS' && (
+        <TurnPositionSpotlight
+          clash={activeClash}
+          combatState={combatState}
+          player={player}
+          opponent={opponent}
+          turnNumber={combatState.turnNumber}
+          onContinue={() => {
+            setShowTurnSpotlight(false);
+            setIsClashing(false);
+            setActiveClash(null);
+            const nextMax = calculateTurnInitiativeMax(opponent, combatState);
+            setMaxTurnInitiative(nextMax);
+            setTurnInitiativeSeconds(nextMax);
+          }}
+        />
       )}
 
       {/* Match Result Victory/Defeat Modal */}

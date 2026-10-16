@@ -5,6 +5,7 @@ import { CombatCard } from '../../types/cards';
 import { AthleteToken } from './AthleteToken';
 import { ClashResolution } from '../../engine/clashEngine';
 import { getPositionNamePt } from '../../engine/bjjRules';
+import { PositionIllustration } from './PositionIllustration';
 import { Zap, Swords, Sparkles, Shield, Trophy, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 interface CombatArenaProps {
@@ -234,25 +235,51 @@ export const CombatArena: React.FC<CombatArenaProps> = ({
                     {activeClash.headline}
                   </span>
 
-                  {/* Clear Positional Transition Note */}
-                  <div className="mt-1.5 p-1.5 rounded-lg bg-black/80 border border-white/10 text-[10px] md:text-[11px] font-mono text-slate-200">
-                    <p className="leading-snug">
+                  {/* Clear Positional Transition Note & Illustrated Result */}
+                  <div className="mt-1.5 p-2 rounded-xl bg-black/90 border border-amber-500/40 text-[10px] md:text-[11px] font-mono text-slate-200 flex flex-col items-center gap-1.5">
+                    <p className="leading-snug text-center">
                       {activeClash.description}
                     </p>
+                    <PositionIllustration
+                      position={activeClash.newPosition}
+                      playerRole={activeClash.playerRoleNow}
+                      playerBelt={player.belt}
+                      opponentBelt={opponent.belt}
+                      size="sm"
+                      showPointsBadge={false}
+                      className="border border-white/20"
+                    />
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center text-center p-3.5 bg-black/75 rounded-2xl border border-amber-500/30 backdrop-blur-md shadow-2xl">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-b from-amber-500/20 to-black border-2 border-amber-400 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.3)] mb-1.5">
-                  <Swords className="w-7 h-7 text-amber-400 animate-pulse" />
+              <div className="flex flex-col items-center justify-center text-center p-2.5 sm:p-3 bg-black/85 rounded-2xl border border-amber-500/40 backdrop-blur-md shadow-2xl max-w-xs sm:max-w-sm w-full animate-fade-in">
+                {/* Live Position Artwork */}
+                <div className="relative w-full flex flex-col items-center">
+                  <div className="flex items-center gap-1.5 mb-1 text-[10px] font-mono font-bold text-amber-400 uppercase tracking-widest">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                    <span>POSIÇÃO: {positionLabel}</span>
+                  </div>
+
+                  <PositionIllustration
+                    position={technical.position}
+                    playerRole={isStanding ? 'standing' : isPlayerTop ? 'top' : 'bottom'}
+                    playerBelt={player.belt}
+                    opponentBelt={opponent.belt}
+                    playerGiColor={player.visual?.giColor === 'royal-blue' ? '#2563eb' : player.visual?.giColor === 'black' ? '#18181b' : '#f8fafc'}
+                    opponentGiColor={opponent.visual?.giColor === 'royal-blue' ? '#2563eb' : opponent.visual?.giColor === 'black' ? '#18181b' : '#3b82f6'}
+                    size="md"
+                    className="shadow-lg border border-amber-500/30"
+                  />
                 </div>
-                <span className="text-xs font-title font-black uppercase tracking-wider text-amber-300">
-                  DUELO DE CARTAS PRONTO
-                </span>
-                <span className="text-[10px] font-mono text-slate-300 mt-0.5">
-                  Selecione uma carta da sua mão para confrontar o oponente
-                </span>
+
+                <div className="mt-1.5 text-[10px] font-mono text-slate-300">
+                  {selectedCard ? (
+                    <span className="text-amber-300 font-bold">Carta armada: "{selectedCard.name}"</span>
+                  ) : (
+                    <span>Selecione uma carta na mão para duelar</span>
+                  )}
+                </div>
               </div>
             )}
           </div>
