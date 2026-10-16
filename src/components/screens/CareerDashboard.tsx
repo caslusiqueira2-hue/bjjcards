@@ -4,6 +4,7 @@ import { CareerState, Tournament, TournamentMatch, TrainingDrill } from '../../t
 import { AthleteProfile } from '../career/AthleteProfile';
 import { TrainingGym } from '../career/TrainingGym';
 import { TournamentBracket } from '../career/TournamentBracket';
+import { TrophyShowcase } from '../career/TrophyShowcase';
 import { TOURNAMENTS_DATA } from '../../data/tournaments';
 import { CareerEngine } from '../../engine/careerEngine';
 import { BeltBadge } from '../ui/BeltBadge';
@@ -198,6 +199,7 @@ export const CareerDashboard: React.FC<CareerDashboardProps> = ({
             athlete={athlete}
             onUpgradeAttribute={handleUpgradeAttribute}
             onGraduationAction={handleGraduationAction}
+            onUpdateAthlete={onUpdateAthlete}
           />
         )}
 
@@ -306,42 +308,7 @@ export const CareerDashboard: React.FC<CareerDashboardProps> = ({
         )}
 
         {activeTab === 'trophies' && (
-          <div className="bg-zinc-950/85 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-            <h3 className="font-title text-xl font-black text-amber-400 uppercase tracking-wider border-b border-white/10 pb-3">
-              MURAL DE CONQUISTAS & MEDALHAS
-            </h3>
-
-            {athlete.careerRecord.titles.length === 0 ? (
-              <div className="py-12 flex flex-col items-center justify-center text-center text-slate-400">
-                <Trophy className="w-12 h-12 text-slate-600 mb-2" />
-                <p className="font-title text-base font-bold text-slate-300">
-                  Nenhum título conquistado ainda.
-                </p>
-                <p className="text-xs font-mono text-slate-500 mt-1">
-                  Dispute os Opens da CBJJA para conquistar sua primeira medalha de ouro!
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {athlete.careerRecord.titles.map((title, idx) => (
-                  <div
-                    key={idx}
-                    className="p-4 rounded-2xl bg-gradient-to-b from-amber-950/30 to-black border border-amber-500/40 flex items-center gap-3 shadow-md"
-                  >
-                    <Trophy className="w-8 h-8 text-amber-400 flex-shrink-0" />
-                    <div>
-                      <span className="font-title font-bold text-sm text-slate-100 block">
-                        {title}
-                      </span>
-                      <span className="text-[10px] font-mono text-amber-400">
-                        Campeão Oficial
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <TrophyShowcase athlete={athlete} />
         )}
       </div>
     </div>

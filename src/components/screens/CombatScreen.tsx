@@ -13,6 +13,7 @@ import { CardHand } from '../combat/CardHand';
 import { CombatLog } from '../combat/CombatLog';
 import { CombatResultModal } from '../ui/CombatResultModal';
 import { sound } from '../../audio/soundEffects';
+import { Zap } from 'lucide-react';
 
 interface CombatScreenProps {
   player: Athlete;
@@ -38,14 +39,14 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   const [activeClash, setActiveClash] = useState<ClashResolution | null>(null);
   const [isMuted, setIsMuted] = useState<boolean>(sound.getIsMuted());
 
-  // Turn initiative timer calculation (aggressive opponents or trailing on points attack faster)
+  // Turn initiative timer calculation: Comfortable 18-24 seconds so the player can analyze the tatame and react comfortably!
   const calculateTurnInitiativeMax = (opp: Athlete, state: CombatState): number => {
-    let t = 10;
-    if (opp.style === 'Wrestler' || opp.style === 'Passador') t = 8;
-    else if (opp.style === 'Finalizador') t = 9;
-    // Trailing on points => urgent offense
+    let t = 22; // Base comfortable time for tactical thinking and mobile ergonomics
+    if (opp.style === 'Wrestler' || opp.style === 'Passador') t = 20;
+    else if (opp.style === 'Finalizador') t = 19;
+    // Trailing on points => opponent becomes slightly more urgent
     if (state.scores.player.points > state.scores.opponent.points) {
-      t = Math.max(6, t - 2);
+      t = Math.max(16, t - 3);
     }
     return t;
   };
@@ -109,7 +110,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         if (nextVal <= 0) {
           // Time ran out for player to decide => Opponent acts autonomously!
           handleOpponentAutonomousInitiative();
-          return 10;
+          return maxTurnInitiative;
         }
         return nextVal;
       });
@@ -376,6 +377,24 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           isPlayerTurn={combatState.status === 'IN_PROGRESS' && !isClashing}
         />
       </div>
+
+      {/* Mobile Floating Quick Action Trigger for instant reaction */}
+      {selectedCard && combatState.status === 'IN_PROGRESS' && !isClashing && (
+        <div className="fixed bottom-3 inset-x-3 sm:hidden z-50 animate-bounce">
+          <button
+            onClick={() => handleExecuteClash(selectedCard)}
+            className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 text-black font-title font-black text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(245,158,11,0.7)] flex items-center justify-between border-2 border-white/60 active:scale-95 transition-transform"
+          >
+            <div className="flex items-center gap-2 truncate">
+              <Zap className="w-5 h-5 text-black flex-shrink-0" />
+              <span className="truncate">EXECUTAR: {selectedCard.name}</span>
+            </div>
+            <span className="text-[11px] font-mono font-black px-2.5 py-1 rounded-lg bg-black text-amber-300">
+              {selectedCard.pointsOnSuccess ? `+${selectedCard.pointsOnSuccess} PTS` : selectedCard.isSubmission ? 'FINALIZAR' : 'GOLPE'}
+            </span>
+          </button>
+        </div>
+      )}
 
       {/* Match Result Victory/Defeat Modal */}
       {combatState.status !== 'IN_PROGRESS' && (

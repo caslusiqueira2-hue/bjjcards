@@ -1,21 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Athlete } from '../../types/athlete';
 import { BeltBadge } from '../ui/BeltBadge';
 import { AthletePortrait } from './AthletePortrait';
+import { AthleteBJJCard } from './AthleteBJJCard';
+import { EditAthleteModal } from './EditAthleteModal';
 import { CareerEngine } from '../../engine/careerEngine';
-import { Shield, Zap, Award, Activity, Plus, Clock, Sparkles } from 'lucide-react';
+import { Shield, Zap, Award, Activity, Plus, Clock, Sparkles, UserCog, Edit3 } from 'lucide-react';
 
 interface AthleteProfileProps {
   athlete: Athlete;
   onUpgradeAttribute?: (attrKey: string) => void;
   onGraduationAction?: () => void;
+  onUpdateAthlete?: (updated: Athlete) => void;
 }
 
 export const AthleteProfile: React.FC<AthleteProfileProps> = ({
   athlete,
   onUpgradeAttribute,
-  onGraduationAction
+  onGraduationAction,
+  onUpdateAthlete
 }) => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const attrs = athlete.attributes;
   const graduation = CareerEngine.evaluateGraduation(athlete);
 
@@ -61,35 +66,48 @@ export const AthleteProfile: React.FC<AthleteProfileProps> = ({
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
-      {/* 1. Athlete Hero Card */}
-      <div className="bg-zinc-950/90 border border-amber-600/40 rounded-3xl p-5 md:p-6 shadow-2xl backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-5">
-          <AthletePortrait
-            avatarId={athlete.visual.avatarId}
-            avatarUrl={athlete.visual?.avatarUrl}
-            belt={athlete.belt}
-            stripes={athlete.stripes}
-            size="lg"
-            className="flex-shrink-0"
+      {/* 1. Athlete Hero Section: Collectible BJJ Card + Career Summary */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column: Collectible BJJ Card with Belt Rank Wrap */}
+        <div className="lg:col-span-5 flex flex-col items-center">
+          <AthleteBJJCard
+            athlete={athlete}
+            onEditClick={() => setIsEditModalOpen(true)}
+            className="w-full max-w-sm"
           />
+        </div>
 
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="font-title text-2xl md:text-3xl font-black text-slate-100 tracking-wide uppercase">
-                {athlete.name}
-              </h2>
-              {athlete.nickname && (
-                <span className="text-amber-400 font-title font-bold text-lg">
-                  "{athlete.nickname}"
-                </span>
-              )}
+        {/* Right Column: Athlete Overview, Cartel & Quick Actions */}
+        <div className="lg:col-span-7 flex flex-col gap-4">
+          {/* Main Info Card */}
+          <div className="bg-zinc-950/90 border border-amber-600/40 rounded-3xl p-5 md:p-6 shadow-2xl backdrop-blur-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="font-title text-2xl md:text-3xl font-black text-slate-100 tracking-wide uppercase">
+                    {athlete.name}
+                  </h2>
+                  {athlete.nickname && (
+                    <span className="text-amber-400 font-title font-bold text-lg">
+                      "{athlete.nickname}"
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs md:text-sm text-slate-400 font-mono mt-0.5">
+                  Academia: <strong className="text-slate-200">{athlete.academy}</strong>
+                </p>
+              </div>
+
+              <button
+                onClick={() => setIsEditModalOpen(true)}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 font-title font-bold text-xs uppercase tracking-wider transition-all hover:scale-105 shadow"
+              >
+                <Edit3 className="w-4 h-4" />
+                <span>Editar Informações</span>
+              </button>
             </div>
 
-            <p className="text-xs md:text-sm text-slate-400 font-mono mt-0.5">
-              Academia: <strong className="text-slate-200">{athlete.academy}</strong>
-            </p>
-
-            <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <BeltBadge belt={athlete.belt} stripes={athlete.stripes} size="md" />
               <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-zinc-900 border border-slate-700 text-slate-300">
                 {athlete.weightClass}
@@ -102,37 +120,45 @@ export const AthleteProfile: React.FC<AthleteProfileProps> = ({
                 {athlete.trainingWeeks || 0} Semanas de Tatame
               </span>
             </div>
-          </div>
-        </div>
 
-        {/* Record & Condition */}
-        <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-white/10">
-          <div className="text-left md:text-right">
-            <span className="text-xs text-slate-400 font-mono block">Cartel Oficial:</span>
-            <span className="text-base font-mono font-black text-slate-200">
-              {athlete.careerRecord.wins}V - {athlete.careerRecord.losses}D ({athlete.careerRecord.submissions} Subs)
-            </span>
-            <span className="text-xs text-amber-400 font-mono font-bold block mt-0.5">
-              Reputação: {athlete.reputation} pts
-            </span>
-          </div>
+            {/* Quick Metrics Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+              <div className="bg-zinc-900/60 border border-white/5 p-3 rounded-2xl">
+                <span className="text-[10px] text-slate-400 font-mono uppercase block">Cartel Oficial</span>
+                <span className="text-base font-mono font-black text-slate-100">
+                  {athlete.careerRecord.wins}V - {athlete.careerRecord.losses}D
+                </span>
+                <span className="text-[10px] text-emerald-400 font-mono block">
+                  {athlete.careerRecord.submissions} finalizações
+                </span>
+              </div>
 
-          {/* Fatigue Bar */}
-          <div className="flex flex-col items-start md:items-end">
-            <div className="flex items-center gap-1.5 text-xs font-mono font-bold">
-              <Activity className={`w-3.5 h-3.5 ${athlete.fatigue > 50 ? 'text-red-400' : 'text-emerald-400'}`} />
-              <span className="text-slate-400">Fadiga:</span>
-              <span className={athlete.fatigue > 50 ? 'text-red-400 font-black' : 'text-emerald-400 font-bold'}>
-                {athlete.fatigue}%
-              </span>
-            </div>
-            <div className="w-32 h-2.5 bg-zinc-900 rounded-full border border-slate-700 overflow-hidden mt-1 p-0.5">
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${
-                  athlete.fatigue > 60 ? 'bg-red-500' : athlete.fatigue > 30 ? 'bg-amber-500' : 'bg-emerald-500'
-                }`}
-                style={{ width: `${athlete.fatigue}%` }}
-              />
+              <div className="bg-zinc-900/60 border border-white/5 p-3 rounded-2xl">
+                <span className="text-[10px] text-slate-400 font-mono uppercase block">Reputação</span>
+                <span className="text-base font-mono font-black text-amber-400">
+                  {athlete.reputation} pts
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono block">
+                  Ranking Nacional
+                </span>
+              </div>
+
+              <div className="col-span-2 sm:col-span-1 bg-zinc-900/60 border border-white/5 p-3 rounded-2xl">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] text-slate-400 font-mono uppercase">Fadiga</span>
+                  <span className={`text-xs font-mono font-black ${athlete.fatigue > 50 ? 'text-red-400' : 'text-emerald-400'}`}>
+                    {athlete.fatigue}%
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden mt-1.5 p-0.5">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${
+                      athlete.fatigue > 60 ? 'bg-red-500' : athlete.fatigue > 30 ? 'bg-amber-500' : 'bg-emerald-500'
+                    }`}
+                    style={{ width: `${athlete.fatigue}%` }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -311,6 +337,18 @@ export const AthleteProfile: React.FC<AthleteProfileProps> = ({
           ))}
         </div>
       </div>
+
+      {/* Edit Athlete Profile Modal */}
+      {isEditModalOpen && (
+        <EditAthleteModal
+          athlete={athlete}
+          onSave={(updated) => {
+            onUpdateAthlete?.(updated);
+            setIsEditModalOpen(false);
+          }}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

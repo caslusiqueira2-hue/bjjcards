@@ -139,11 +139,11 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
       <div className="grid grid-cols-12 items-center gap-2 md:gap-4">
         {/* PLAYER SIDE (Columns 1-5) */}
         <div className="col-span-5 flex items-center justify-between bg-blue-950/20 border border-blue-500/20 rounded-xl p-2 md:p-3">
-          <div className="flex flex-col">
-            <span className="font-title text-sm md:text-base font-black text-blue-200 tracking-wide flex items-center gap-1.5">
+          <div className="flex flex-col min-w-0">
+            <span className="font-title text-xs sm:text-sm md:text-base font-black text-blue-200 tracking-wide truncate max-w-[80px] sm:max-w-[140px] md:max-w-none">
               {player.name}
             </span>
-            <span className="text-[10px] text-slate-400 font-mono">
+            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono truncate max-w-[80px] sm:max-w-[140px] md:max-w-none">
               {player.academy}
             </span>
             <div className="mt-1">
@@ -227,11 +227,11 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
             </div>
           </div>
 
-          <div className="flex flex-col items-end">
-            <span className="font-title text-sm md:text-base font-black text-red-200 tracking-wide flex items-center gap-1.5">
+          <div className="flex flex-col items-end min-w-0">
+            <span className="font-title text-xs sm:text-sm md:text-base font-black text-red-200 tracking-wide truncate max-w-[80px] sm:max-w-[140px] md:max-w-none text-right">
               {opponent.name}
             </span>
-            <span className="text-[10px] text-slate-400 font-mono">
+            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono truncate max-w-[80px] sm:max-w-[140px] md:max-w-none text-right">
               {opponent.academy}
             </span>
             <div className="mt-1">
