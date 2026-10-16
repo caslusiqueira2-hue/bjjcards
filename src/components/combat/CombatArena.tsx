@@ -89,7 +89,7 @@ export const CombatArena: React.FC<CombatArenaProps> = ({
       </div>
 
       {/* 2. Main Championship Tatame Arena */}
-      <div className="relative w-full aspect-[16/8] sm:aspect-[16/9] min-h-[200px] sm:min-h-[360px] max-h-[260px] sm:max-h-[440px] rounded-3xl bg-black border-2 border-amber-500/40 shadow-tatame overflow-hidden flex flex-col justify-between p-3 md:p-5">
+      <div className="relative w-full aspect-[16/8] sm:aspect-[16/9] min-h-[220px] sm:min-h-[380px] max-h-[300px] sm:max-h-[480px] rounded-3xl bg-black border-2 border-amber-500/40 shadow-tatame overflow-hidden flex flex-col justify-between p-3 md:p-5">
         {/* Championship Arena Photo Background */}
         <div
           className="absolute inset-0 bg-cover bg-center pointer-events-none filter brightness-[0.70] contrast-125 transition-transform duration-700"
@@ -253,7 +253,7 @@ export const CombatArena: React.FC<CombatArenaProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center text-center p-2.5 sm:p-3 bg-black/85 rounded-2xl border border-amber-500/40 backdrop-blur-md shadow-2xl max-w-xs sm:max-w-sm w-full animate-fade-in">
+              <div className="flex flex-col items-center justify-center text-center p-2.5 sm:p-3 bg-black/85 rounded-2xl border border-amber-500/40 backdrop-blur-md shadow-2xl max-w-sm sm:max-w-md md:max-w-lg w-full animate-fade-in">
                 {/* Live Position Artwork */}
                 <div className="relative w-full flex flex-col items-center">
                   <div className="flex items-center gap-1.5 mb-1 text-[10px] font-mono font-bold text-amber-400 uppercase tracking-widest">

@@ -244,7 +244,7 @@ export const DailyCombatArena: React.FC<DailyCombatArenaProps> = ({
       </div>
 
       {/* 3. Central Tatame with Dynamic Position Illustration */}
-      <div className="w-full max-w-4xl mx-auto relative rounded-3xl bg-black border-2 border-amber-500/40 p-3 sm:p-4 shadow-2xl flex flex-col items-center justify-between min-h-[190px] sm:min-h-[240px] mb-2 overflow-hidden">
+      <div className="w-full max-w-4xl mx-auto relative rounded-3xl bg-black border-2 border-amber-500/40 p-3 sm:p-4 shadow-2xl flex flex-col items-center justify-between min-h-[260px] sm:min-h-[320px] mb-2 overflow-hidden">
         {/* Background photo & overlay */}
         <div
           className="absolute inset-0 bg-cover bg-center pointer-events-none filter brightness-50 contrast-125"
